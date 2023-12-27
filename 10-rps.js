@@ -58,7 +58,7 @@ let score=JSON.parse(localStorage.getItem('score'));
                      computer`;
 
             }
-            const randomNum= Math.random();
+           
 
             function updateScore()
             {
@@ -67,6 +67,7 @@ let score=JSON.parse(localStorage.getItem('score'));
             }
             function pickMove()
             {    
+            const randomNum= Math.random();
             let move='';
             if(randomNum>=0 && randomNum<1/3)
             move= 'rock';
