@@ -1,5 +1,5 @@
 # JAVASCRIPT PROJECTS
-to do list 
+to do list and 
 rock paper scissors
 ## Languages
 ```bash
