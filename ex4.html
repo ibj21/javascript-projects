@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minion Eye Tracking</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: yellow; /* Minion Body Color */
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .minion-eye {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 10px solid gray; /* Goggle Rim */
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        .pupil {
+            width: 50px;
+            height: 50px;
+            background: brown;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            transition: transform 0.05s linear;
+        }
+        .pupil::before {
+            content: "";
+            width: 20px;
+            height: 20px;
+            background: black;
+            border-radius: 50%;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+    <div class="minion-eye">
+        <div class="pupil"></div>
+    </div>
+
+    <script>
+        const pupil = document.querySelector(".pupil");
+        const eye = document.querySelector(".minion-eye");
+
+        document.addEventListener("mousemove", (event) => {
+            let mouseX = event.clientX;
+            let mouseY = event.clientY;
+
+            let eyeRect = eye.getBoundingClientRect();
+            let eyeX = eyeRect.left + eyeRect.width / 2;
+            let eyeY = eyeRect.top + eyeRect.height / 2;
+
+            let deltaX = mouseX - eyeX;
+            let deltaY = mouseY - eyeY;
+
+            let angle = Math.atan2(deltaY, deltaX);
+
+            // Ensure the pupil moves within bounds
+            let maxMove = (eyeRect.width / 2) - (pupil.clientWidth / 2);
+            let moveX = Math.cos(angle) * Math.min(maxMove, Math.hypot(deltaX, deltaY) / 5);
+            let moveY = Math.sin(angle) * Math.min(maxMove, Math.hypot(deltaX, deltaY) / 5);
+
+            pupil.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        });
+    </script>
+</body>
+</html>

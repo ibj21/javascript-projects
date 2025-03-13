@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashlight Effect</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+            cursor: none; /* Hide default cursor */
+        }
+        body {
+            background-color: black;
+            color: white;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        p {
+            font-size: 1.2em;
+            text-align: justify;
+            line-height: 2em;
+            padding: 0 2em;
+            margin-bottom: 1em;
+        }
+        /* Flashlight Effect */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(0,0,0,0) 100px, rgba(0,0,0,0.8) 250px, rgba(0,0,0,1) 600px);
+            pointer-events: none;
+            transition: background 0.05s linear;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="overlay"></div> <!-- Flashlight effect -->
+    <p>
+        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Totam placeat
+        nam impedit quis, molestiae quae maxime nisi nulla nesciunt cupiditate
+        ipsum doloremque, consequatur porro voluptatibus voluptatem distinctio,
+        perspiciatis rerum aliquam deleniti quibusdam ad odit laudantium natus
+        minima. Veritatis error facilis voluptatem nesciunt beatae, voluptas
+        totam, expedita ab, cupiditate quibusdam voluptates similique blanditiis.
+    </p>
+
+    <script>
+        document.addEventListener("mousemove", function(e) {
+            let x = e.pageX;
+            let y = e.pageY;
+
+            document.querySelector(".overlay").style.background = 
+                `radial-gradient(circle at ${x}px ${y}px, rgba(0,0,0,0) 100px, rgba(0,0,0,0.8) 250px, rgba(0,0,0,1) 600px)`;
+        });
+    </script>
+
+</body>
+</html>

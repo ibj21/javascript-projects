@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .cell{
+            width:75px;
+            height: 75px;
+            border: 2px solid;
+            box-shadow: 0 0 0 2px;
+            line-height: 75px;
+            font-size: 50px;
+            cursor:pointer;
+        }
+        #gameContainer{
+            align-items: center;
+            text-align: center;
+            justify-content: center;
+        }
+        #cellContainer{
+            display: grid;
+            grid-template-columns: repeat(3,auto);
+            width: 225px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <h1> Tic Tac Toe </h1>
+        <div id="cellContainer">
+            <div cellIndex="0" class="cell"></div>
+            <div cellIndex="1" class="cell"></div>
+            <div cellIndex="2" class="cell"></div>
+            <div cellIndex="3" class="cell"></div>
+            <div cellIndex="4" class="cell"></div>
+            <div cellIndex="5" class="cell"></div>
+            <div cellIndex="6" class="cell"></div>
+            <div cellIndex="7" class="cell"></div>
+            <div cellIndex="8" class="cell"></div>
+        </div>
+        <h2 id="stats"></h2>
+        <button id="resetBtn">Reset</button>
+        <script>
+            const cells=document.querySelectorAll(".cell");
+            const statusText=document.querySelector("#stats");
+            const resetBtn=document.querySelector("#resetBtn");
+
+            const winConditions=[
+                [0,1,2],
+                [3,4,5],
+                [6,7,8],
+                [0,3,6],
+                [1,4,7],
+                [2,5,8]
+
+        ];
+        let options= ["", "","", "","", "","", "", ""];
+        let current="X";
+        let running=false;
+
+        function initialiseGame(){
+            running=true;
+            cells.forEach(cell =>
+                cell.addEventListener("click",cellClicked));
+                resetBtn.addEventListener("click",resetGame);
+                statusText.textContent=`${current}`;
+        };
+        function cellClicked(){
+            const cellIndex= this.getAttribute("cellIndex");
+            if(options[cellIndex]!="" || !running){
+                return;
+            }
+            updateCell(this, cellIndex);
+            checkWinner();
+
+        };
+        function updateCell(cell, index){
+            options[index]=current;
+            cell.textContent=current;
+
+        };
+        function changePlayer(){
+            current=(current=="X")? "O":"X";
+            statusText.textContent=`${current}`;
+        };
+        function checkWinner(){
+            let roundwon=false;
+
+            for(let i=0; i<9; i++){
+                const condition= winConditions[i];
+                const a=options[condition[0]];
+                const b=options[condition[1]];
+                const c=options[condition[2]];
+            }
+        };
+        function resetGame(){};
+
+        initialiseGame();
+
+        </script>
+    </div>
+</body>
+</html>

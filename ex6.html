@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: black;
+            color: white;
+        }
+        canvas {
+            border: 2px solid white;
+            background-color: black;
+            margin-top: 10px;
+        }
+        .controls {
+            margin-top: 10px;
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: lime;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: green;
+        }
+        #gameOver {
+            font-size: 24px;
+            color: red;
+            display: none;
+            margin-top: 10px;
+        }
+        #fruitCounter {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Snake Game</h1>
+    <div id="fruitCounter">Fruits Collected: 0</div>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <div class="controls">
+        <button onclick="startGame()">Start Game</button>
+    </div>
+    <div id="gameOver">Game Over! Click Start to Restart.</div>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        const fruitCounterEl = document.getElementById("fruitCounter");
+        const gameOverText = document.getElementById("gameOver");
+
+        const box = 20;
+        let snake, direction, food, game, fruitsCollected;
+
+        function resetGame() {
+            snake = [{ x: 10 * box, y: 10 * box }];
+            direction = "RIGHT";
+            fruitsCollected = 0;
+            food = {
+                x: Math.floor(Math.random() * 20) * box,
+                y: Math.floor(Math.random() * 20) * box,
+            };
+            gameOverText.style.display = "none";
+            fruitCounterEl.innerText = `Fruits Collected: ${fruitsCollected}`;
+        }
+
+        function draw() {
+            ctx.fillStyle = "black";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = "red";
+            ctx.fillRect(food.x, food.y, box, box);
+
+            ctx.fillStyle = "lime";
+            snake.forEach(segment => {
+                ctx.fillRect(segment.x, segment.y, box, box);
+                ctx.strokeStyle = "black";
+                ctx.strokeRect(segment.x, segment.y, box, box);
+            });
+
+            let headX = snake[0].x;
+            let headY = snake[0].y;
+
+            if (direction === "LEFT") headX -= box;
+            if (direction === "RIGHT") headX += box;
+            if (direction === "UP") headY -= box;
+            if (direction === "DOWN") headY += box;
+
+            let newHead = { x: headX, y: headY };
+
+            if (headX === food.x && headY === food.y) {
+                fruitsCollected++;
+                fruitCounterEl.innerText = `Fruits Collected: ${fruitsCollected}`;
+                food = {
+                    x: Math.floor(Math.random() * 20) * box,
+                    y: Math.floor(Math.random() * 20) * box,
+                };
+            } else {
+                snake.pop();
+            }
+
+            if (
+                headX < 0 || headX >= canvas.width ||
+                headY < 0 || headY >= canvas.height ||
+                snake.some(segment => segment.x === headX && segment.y === headY)
+            ) {
+                clearInterval(game);
+                gameOverText.style.display = "block";
+                return;
+            }
+
+            snake.unshift(newHead);
+        }
+
+        document.addEventListener("keydown", event => {
+            if (event.key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
+            if (event.key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
+            if (event.key === "ArrowUp" && direction !== "DOWN") direction = "UP";
+            if (event.key === "ArrowDown" && direction !== "UP") direction = "DOWN";
+        });
+
+        function startGame() {
+            resetGame();
+            game = setInterval(draw, 150);
+        }
+    </script>
+
+</body>
+</html>

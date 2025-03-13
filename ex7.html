@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webcam Snapshot & Recording</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #222;
+            color: white;
+        }
+        video, canvas {
+            border: 2px solid white;
+            margin-top: 10px;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Webcam Snapshot & Recording</h1>
+    <video id="video" width="320" height="240" autoplay></video>
+    <canvas id="canvas" width="320" height="240" style="display: none;"></canvas>
+    
+    <div>
+        <button onclick="takeSnapshot()">Take Snapshot</button>
+        <button onclick="startRecording()">Start Recording</button>
+        <button onclick="stopRecording()" disabled id="stopBtn">Stop Recording</button>
+    </div>
+
+    <h3 id="status"></h3>
+    <video id="recordedVideo" width="320" height="240" controls style="display:none;"></video>
+
+    <script>
+        const video = document.getElementById("video");
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        const recordedVideo = document.getElementById("recordedVideo");
+        const statusText = document.getElementById("status");
+
+        let mediaRecorder;
+        let recordedChunks = [];
+
+        // Access the webcam
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+            .then(stream => {
+                video.srcObject = stream;
+                mediaRecorder = new MediaRecorder(stream);
+
+                mediaRecorder.ondataavailable = event => recordedChunks.push(event.data);
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: "video/webm" });
+                    recordedChunks = [];
+                    const videoURL = URL.createObjectURL(blob);
+                    recordedVideo.src = videoURL;
+                    recordedVideo.style.display = "block";
+                };
+            })
+            .catch(err => console.error("Error accessing webcam:", err));
+
+        function takeSnapshot() {
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            canvas.style.display = "block";
+        }
+
+        function startRecording() {
+            recordedChunks = [];
+            mediaRecorder.start();
+            statusText.innerText = "Recording...";
+            document.getElementById("stopBtn").disabled = false;
+        }
+
+        function stopRecording() {
+            mediaRecorder.stop();
+            statusText.innerText = "Recording Stopped!";
+            document.getElementById("stopBtn").disabled = true;
+        }
+    </script>
+
+</body>
+</html>

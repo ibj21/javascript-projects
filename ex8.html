@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashlight Control</title>
+</head>
+<body>
+
+    <h2>Flashlight Control</h2>
+    <button onclick="toggleFlashlight(true)">Turn ON Flashlight</button>
+    <button onclick="toggleFlashlight(false)">Turn OFF Flashlight</button>
+    
+    <script>
+        let stream;
+        let track;
+
+        async function toggleFlashlight(turnOn) {
+            try {
+                if (!stream) {
+                    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment", torch: true } });
+                    track = stream.getVideoTracks()[0];
+                }
+
+                const capabilities = track.getCapabilities();
+                if ("torch" in capabilities) {
+                    await track.applyConstraints({ advanced: [{ torch: turnOn }] });
+                } else {
+                    alert("Flashlight not supported on this device!");
+                }
+            } catch (error) {
+                console.error("Error accessing flashlight:", error);
+            }
+        }
+    </script>
+
+</body>
+</html>

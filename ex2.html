@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analog Clock with Numbers</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #222;
+        }
+        .clock {
+            width: 300px;
+            height: 300px;
+            background: white;
+            border-radius: 50%;
+            border: 5px solid black;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.3);
+        }
+        .clock::before {
+            content: "";
+            width: 12px;
+            height: 12px;
+            background: black;
+            border-radius: 50%;
+            position: absolute;
+            z-index: 10;
+        }
+        .hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom;
+            transform: translateX(-50%) rotate(0deg);
+            transition: transform 0.1s linear;
+        }
+        .hour {
+            width: 6px;
+            height: 70px;
+            background: black;
+        }
+        .minute {
+            width: 4px;
+            height: 90px;
+            background: black;
+        }
+        .second {
+            width: 2px;
+            height: 100px;
+            background: red;
+        }
+        .numbers {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .number {
+            position: absolute;
+            font-size: 20px;
+            font-weight: bold;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="clock">
+        <div class="numbers" id="numbers"></div>
+        <div class="hand hour" id="hour"></div>
+        <div class="hand minute" id="minute"></div>
+        <div class="hand second" id="second"></div>
+    </div>
+    
+    <script>
+        // Function to place numbers dynamically
+        function placeNumbers() {
+            let numbersContainer = document.getElementById("numbers");
+            for (let i = 1; i <= 12; i++) {
+                let angle = (i * 30) * (Math.PI / 180); // Convert degrees to radians
+                let x = 50 + 42 * Math.sin(angle); // Adjusted for positioning
+                let y = 50 - 42 * Math.cos(angle);
+                let num = document.createElement("div");
+                num.className = "number";
+                num.style.left = `${x}%`;
+                num.style.top = `${y}%`;
+                num.innerText = i;
+                numbersContainer.appendChild(num);
+            }
+        }
+
+        function updateClock() {
+            let now = new Date();
+            let hours = now.getHours() % 12; // Convert to 12-hour format
+            let minutes = now.getMinutes();
+            let seconds = now.getSeconds();
+
+            let hourDeg = (hours + minutes / 60) * 30; // Each hour is 30 degrees
+            let minuteDeg = (minutes + seconds / 60) * 6; // Each minute is 6 degrees
+            let secondDeg = seconds * 6; // Each second is 6 degrees
+
+            document.getElementById("hour").style.transform = `translateX(-50%) rotate(${hourDeg}deg)`;
+            document.getElementById("minute").style.transform = `translateX(-50%) rotate(${minuteDeg}deg)`;
+            document.getElementById("second").style.transform = `translateX(-50%) rotate(${secondDeg}deg)`;
+        }
+
+        placeNumbers(); // Place numbers dynamically
+        setInterval(updateClock, 1000);
+        updateClock(); // Initialize immediately
+    </script>
+</body>
+</html>
